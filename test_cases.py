@@ -99,3 +99,21 @@ negative_test_cases = [
         'pass_condition': 'code_200'
     },
     ]
+
+safety_test_cases = [
+    {
+        'name': 'Проверка на вставку HTML тэгов',
+        'text': '<p>Canyouseeme?</p>',
+        'pass_condition': 'does_not_contain',
+    },
+    {
+        'name': 'Проверка на XSS',
+        'text': '<script>alert("Pwned")</script>',
+        'pass_condition': 'does_not_contain',
+    },
+    {
+        'name': 'Проверка на SQL инъекцию',
+        'text': '\' UNION SELECT 1',
+        'pass_condition': 'code_200',
+    },
+    ]

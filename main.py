@@ -12,10 +12,12 @@ def api_request(text):
     result = {
         'code': status_code,
         'found': None,
-        'items': None
+        'items': None,
+        'plain_text': None
         }
     
     if status_code == 200:
+        result['plain_text'] = response.text
         data = json.loads(response.text)
         result['found'] = data['found']
         result['items'] = data['items']
@@ -31,6 +33,12 @@ def api_test(test_case):
         
         if test_case['pass_condition'] == 'found':
             return True if api_response['found']>0 else False
+        
+        if test_case['pass_condition'] == 'contains':
+            return True if api_response['plain_text'].find(test_case['text'])>-1 else False
+
+        if test_case['pass_condition'] == 'does_not_contain':
+            return True if api_response['plain_text'].find(test_case['text'])<0 else False
 
 
 if api_test(basic_test_case):
@@ -53,6 +61,15 @@ print('Негативные тесты:')
 for test_case in negative_test_cases:
     print(f" {test_case['name']: <50}", end=' ')
     test_result = 'passed' if api_test(test_case) else 'failed'
-    print(test_result)    
+    print(test_result)
+
+print()
+print('Тесты на безопасность:')
     
+for test_case in safety_test_cases:
+    print(f" {test_case['name']: <50}", end=' ')
+    test_result = 'passed' if api_test(test_case) else 'failed'
+    print(test_result)
+
+
 
